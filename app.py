@@ -26,22 +26,134 @@ st.set_page_config(
 st.markdown("""
 <style>
 
+/* Main app spacing */
+.block-container{
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+/* Header hero */
+.project-hero{
+    background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 55%, #2563EB 100%);
+    border-radius: 22px;
+    padding: 28px 32px;
+    color: #FFFFFF;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.18);
+}
+.project-hero h1{
+    margin: 0;
+    font-size: 36px;
+    font-weight: 850;
+    letter-spacing: -0.5px;
+}
+.project-hero p{
+    margin: 8px 0 0 0;
+    font-size: 17px;
+    color: #DBEAFE;
+}
+
+/* Metric cards - readable in both Light Mode and Dark Mode */
 [data-testid="stMetric"]{
-    background-color:#111827;
-    border:1px solid #374151;
-    padding:20px;
-    border-radius:15px;
-    text-align:center;
+    background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+    border: 1px solid #CBD5E1;
+    padding: 20px;
+    border-radius: 18px;
+    text-align: center;
+    box-shadow: 0 7px 20px rgba(15, 23, 42, 0.10);
 }
 
 [data-testid="stMetricLabel"]{
-    font-size:18px;
-    font-weight:bold;
+    font-size: 16px;
+    font-weight: 750;
+    color: #0F172A !important;
 }
 
 [data-testid="stMetricValue"]{
-    font-size:35px;
-    color:#60A5FA;
+    font-size: 34px;
+    font-weight: 850;
+    color: #1D4ED8 !important;
+}
+
+[data-testid="stMetricDelta"]{
+    color: #475569 !important;
+}
+
+/* Custom cards */
+.info-card{
+    background: #F8FAFC;
+    border: 1px solid #CBD5E1;
+    border-radius: 18px;
+    padding: 18px 20px;
+    margin: 10px 0 16px 0;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+    color: #0F172A;
+}
+.info-card h3{
+    margin: 0 0 8px 0;
+    color: #0F172A;
+}
+.info-card p{
+    margin: 0;
+    color: #334155;
+    font-size: 16px;
+}
+.status-card-good{
+    background: linear-gradient(135deg, #DCFCE7 0%, #F0FDF4 100%);
+    border: 1px solid #86EFAC;
+    border-radius: 18px;
+    padding: 22px;
+    color: #14532D;
+    box-shadow: 0 7px 20px rgba(20, 83, 45, 0.10);
+}
+.status-card-unhealthy{
+    background: linear-gradient(135deg, #FEF3C7 0%, #FFFBEB 100%);
+    border: 1px solid #FCD34D;
+    border-radius: 18px;
+    padding: 22px;
+    color: #78350F;
+    box-shadow: 0 7px 20px rgba(120, 53, 15, 0.10);
+}
+.status-card-hazardous{
+    background: linear-gradient(135deg, #FEE2E2 0%, #FFF1F2 100%);
+    border: 1px solid #FCA5A5;
+    border-radius: 18px;
+    padding: 22px;
+    color: #7F1D1D;
+    box-shadow: 0 7px 20px rgba(127, 29, 29, 0.10);
+}
+.status-card-good h2,
+.status-card-unhealthy h2,
+.status-card-hazardous h2{
+    margin: 0 0 10px 0;
+    font-size: 28px;
+    font-weight: 850;
+}
+.status-card-good p,
+.status-card-unhealthy p,
+.status-card-hazardous p{
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+.small-muted{
+    color: #64748B;
+    font-size: 14px;
+}
+
+/* Dataframe/table */
+[data-testid="stDataFrame"]{
+    border-radius: 12px;
+}
+
+/* Sidebar text */
+.sidebar-card{
+    background: #F8FAFC;
+    border: 1px solid #CBD5E1;
+    border-radius: 14px;
+    padding: 14px;
+    color: #0F172A;
+    font-size: 14px;
 }
 
 </style>
@@ -358,12 +470,11 @@ df_chart = load_chart_data()
 # ==========================================
 
 st.markdown("""
-# 🌍 Smart Air Quality Monitoring System
-
-### Real-Time Monitoring and AI-Based Prediction Dashboard
-
----
-""")
+<div class="project-hero">
+    <h1>🌍 Smart Air Quality Monitoring System</h1>
+    <p>Real-Time Monitoring • Historical Analysis • AI-Based 1-Hour Prediction • Smart Ventilation Control</p>
+</div>
+""", unsafe_allow_html=True)
 
 # ==========================================
 # SIDEBAR
@@ -396,6 +507,21 @@ st.sidebar.markdown("---")
 st.sidebar.info(
     f"Total Records: {len(df):,}"
 )
+
+st.sidebar.markdown("---")
+st.sidebar.markdown("""
+<div class="sidebar-card">
+<b>Final Year Project</b><br>
+AI-Enhanced IoT Indoor Air Quality Monitoring, Prediction, and Smart Ventilation Control System<br><br>
+<b>Developed by</b><br>
+Muhammad Haikal Abdul Halim<br><br>
+<b>Supervisor</b><br>
+Dr. Nur Nabila Mohamed<br><br>
+<b>Institution</b><br>
+Faculty of Electrical Engineering<br>
+UiTM Shah Alam
+</div>
+""", unsafe_allow_html=True)
 
 # ==========================================
 # REALTIME MONITORING
@@ -641,9 +767,21 @@ elif page == "AI Prediction":
 
     if model_ready:
 
-        st.info(
-            "Machine Learning model predicts indoor air quality 1 hour ahead using current sensor readings, time-of-day patterns, lag features, and rolling average features."
-        )
+        st.markdown("""
+        <div class="info-card">
+            <h3>🤖 AI Prediction Module</h3>
+            <p>This module predicts the indoor air quality condition <b>1 hour ahead</b> using historical sensor data. The model becomes more useful as more valid records are collected over time.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        with st.expander("📘 Simple explanation of AI results", expanded=False):
+            st.markdown("""
+            **1-Hour Status Accuracy** shows how often the AI correctly predicts the air quality category after 1 hour, such as GOOD, UNHEALTHY, or HAZARDOUS.  
+            **Average AQ Error** shows the average difference between predicted AQ and actual AQ after 1 hour. Lower value is better.  
+            **Large AQ Error Indicator** checks whether the model sometimes makes larger mistakes. Lower value is better.  
+
+            The dashboard focuses on **status accuracy** because the system decision is based on air quality category and smart recommendation, not only the exact AQ value.
+            """)
 
         col_a, col_b, col_c = st.columns(3)
 
@@ -653,41 +791,42 @@ elif page == "AI Prediction":
         )
 
         col_b.metric(
-            "MAE",
-            f"{model_mae:.2f} AQ units"
+            "Average AQ Error",
+            f"±{model_mae:.0f} AQ"
         )
 
         col_c.metric(
-            "RMSE",
-            f"{model_rmse:.2f} AQ units"
+            "Large AQ Error Indicator",
+            f"±{model_rmse:.0f} AQ"
         )
 
         st.caption(
-            f"AI-ready records: {ai_dataset_count:,}. Trained on {train_size_count:,} records and tested on {test_size_count:,} unseen chronological records."
+            f"AI-ready records: {ai_dataset_count:,}. Training records: {train_size_count:,}. Testing records: {test_size_count:,}. Evaluation uses chronological unseen data."
         )
 
         if baseline_mae is not None and baseline_mae > 0:
             improvement = ((baseline_mae - model_mae) / baseline_mae) * 100
             if improvement >= 0:
                 st.success(
-                    f"Model MAE improved by {improvement:.2f}% compared with a simple persistence baseline."
+                    f"The AI prediction error is {improvement:.2f}% lower than a simple method that assumes the AQ value will stay the same after 1 hour."
                 )
             else:
                 st.warning(
-                    f"Model MAE is {-improvement:.2f}% higher than the simple persistence baseline. More tuning may be required."
+                    f"The AI prediction error is {-improvement:.2f}% higher than the simple baseline. More data or feature tuning may improve the model."
                 )
 
-        with st.expander("Show model diagnostics"):
+        with st.expander("🔍 Advanced model details"):
             st.write(f"R² Score: {model_r2:.4f}")
-            st.write(f"Baseline MAE: {baseline_mae:.2f} AQ units")
-            st.write("Note: R² can become negative for noisy sensor data or when future AQ spikes are difficult to predict exactly. Therefore, status accuracy and MAE are displayed as the main dashboard metrics.")
+            st.write(f"Baseline Average Error: ±{baseline_mae:.2f} AQ")
+            st.write("R² is kept only as a diagnostic value. For this project, status accuracy and prediction error are easier to interpret because the system mainly decides whether the future condition is GOOD, UNHEALTHY, or HAZARDOUS.")
+            st.write("Note: Newly collected data can be used immediately for live prediction. However, for training and evaluation, a new row only becomes AI-ready after its actual 1-hour-ahead value exists.")
 
         # Build latest valid feature row for live prediction.
         feature_table = build_feature_table(df)
         latest_features_df = feature_table.dropna(subset=feature_cols).copy()
 
         if latest_features_df.empty:
-            st.warning("Not enough recent data to generate lag-based AI prediction yet.")
+            st.warning("Not enough recent data to generate lag-based AI prediction yet. Please allow the system to collect more continuous records.")
         else:
             latest_feature_row = latest_features_df.iloc[-1]
             latest_actual_row = df.iloc[-1]
@@ -708,44 +847,38 @@ elif page == "AI Prediction":
             )
 
             col2.metric(
-                "Predicted AQ After 1 Hour",
+                "Predicted AQ in 1 Hour",
                 int(predictedAQ)
             )
 
             col3.metric(
-                "Predicted Status",
+                "Predicted Status in 1 Hour",
                 predictedStatus
             )
 
             if predictedStatus == "GOOD":
-
-                st.success(
-                    f"🟢 Predicted Status: {predictedStatus}"
-                )
-
-                st.success(
-                    "Air quality is expected to remain safe within the next hour."
-                )
+                st.markdown("""
+                <div class="status-card-good">
+                    <h2>🟢 Predicted Status: GOOD</h2>
+                    <p>Air quality is expected to remain safe within the next hour. No immediate ventilation action is required.</p>
+                </div>
+                """, unsafe_allow_html=True)
 
             elif predictedStatus == "UNHEALTHY":
-
-                st.warning(
-                    f"🟠 Predicted Status: {predictedStatus}"
-                )
-
-                st.warning(
-                    "Ventilation is recommended for the next hour."
-                )
+                st.markdown("""
+                <div class="status-card-unhealthy">
+                    <h2>🟠 Predicted Status: UNHEALTHY</h2>
+                    <p>Air quality may deteriorate within the next hour. Ventilation is recommended.</p>
+                </div>
+                """, unsafe_allow_html=True)
 
             else:
-
-                st.error(
-                    f"🔴 Predicted Status: {predictedStatus}"
-                )
-
-                st.error(
-                    "Hazardous air quality predicted. Open windows and activate exhaust fan."
-                )
+                st.markdown("""
+                <div class="status-card-hazardous">
+                    <h2>🔴 Predicted Status: HAZARDOUS</h2>
+                    <p>Hazardous air quality is predicted. Immediate ventilation action is recommended.</p>
+                </div>
+                """, unsafe_allow_html=True)
 
             st.markdown("---")
 
@@ -764,12 +897,12 @@ elif page == "AI Prediction":
             elif predictedStatus == "UNHEALTHY":
 
                 st.warning("""
-                ⚠ Air quality is deteriorating
+                ⚠ Air quality is expected to deteriorate
 
                 • Open windows
                 • Turn ON exhaust fan
                 • Increase ventilation
-                • Reduce occupancy
+                • Reduce pollution source if possible
                 """)
 
             else:
