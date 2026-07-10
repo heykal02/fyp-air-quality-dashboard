@@ -187,73 +187,6 @@ def classify_aq(aq_value):
     return "HAZARDOUS"
 
 
-def format_time_gap(seconds):
-    """Convert seconds into a simple readable duration."""
-    seconds = max(0, int(seconds))
-
-    if seconds < 60:
-        return f"{seconds} seconds"
-
-    minutes = seconds / 60
-    if minutes < 60:
-        return f"{minutes:.1f} minutes"
-
-    hours = minutes / 60
-    if hours < 24:
-        return f"{hours:.1f} hours"
-
-    days = hours / 24
-    return f"{days:.1f} days"
-
-
-def get_data_upload_status(latest_time, timeout_seconds=120):
-    """Check whether the latest uploaded data is still recent.
-
-    The ESP32 uploads data every 10 seconds. A timeout of 120 seconds is used
-    to avoid false warnings caused by internet delay, Google Sheets delay, or
-    dashboard caching.
-    """
-    latest_time = pd.to_datetime(latest_time, errors="coerce")
-
-    if pd.isna(latest_time):
-        return "ERROR", None, "Latest timestamp is invalid. Please check Google Sheets timestamp format."
-
-    # Google Sheets timestamp is treated as Malaysia local time.
-    if getattr(latest_time, "tzinfo", None) is not None:
-        latest_time = latest_time.tz_convert("Asia/Kuala_Lumpur").tz_localize(None)
-
-    current_time = pd.Timestamp.now(tz="Asia/Kuala_Lumpur").tz_localize(None)
-    time_gap_seconds = (current_time - latest_time).total_seconds()
-
-    # If timestamp appears ahead of dashboard time, it is usually a timezone/clock issue.
-    if time_gap_seconds < -120:
-        return (
-            "WARNING",
-            abs(time_gap_seconds),
-            "Latest data timestamp appears to be ahead of the dashboard clock. Please check device time or timezone setting."
-        )
-
-    if time_gap_seconds <= timeout_seconds:
-        return (
-            "OK",
-            time_gap_seconds,
-            f"Data upload is active. Latest sensor data was received {format_time_gap(time_gap_seconds)} ago."
-        )
-
-    if time_gap_seconds <= 300:
-        return (
-            "WARNING",
-            time_gap_seconds,
-            f"No new sensor data received for {format_time_gap(time_gap_seconds)}. Please check ESP32 Wi-Fi connection or Google Sheets upload."
-        )
-
-    return (
-        "ERROR",
-        time_gap_seconds,
-        f"No new sensor data received for {format_time_gap(time_gap_seconds)}. Please check ESP32 power supply, Wi-Fi connection, or Google Sheets upload."
-    )
-
-
 def add_valid_lag(df, source_col, lag_steps, lag_seconds, output_col):
     """Add lag feature only when timestamps are truly separated by the intended duration.
 
@@ -631,27 +564,6 @@ if page == "Realtime Monitoring":
     col4.metric(
         "📊 Status",
         latest["Status"]
-    )
-
-    st.markdown("---")
-
-    st.subheader("🛠 System Health Monitoring")
-
-    upload_status, gap_seconds, upload_message = get_data_upload_status(
-        latest["Time"],
-        timeout_seconds=120
-    )
-
-    if upload_status == "OK":
-        st.success(f"✅ {upload_message}")
-    elif upload_status == "WARNING":
-        st.warning(f"⚠ {upload_message}")
-    else:
-        st.error(f"🚨 {upload_message}")
-
-    st.caption(
-        "This health check monitors whether new data is still being uploaded to Google Sheets. "
-        "It does not confirm physical fan/servo movement because actuator feedback sensors are not installed."
     )
 
     st.markdown("---")
