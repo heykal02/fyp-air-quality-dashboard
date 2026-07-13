@@ -723,7 +723,7 @@ elif page == "Historical Analysis":
     st.subheader("📈 Historical Analysis")
 
     st.caption(
-        f"Chart dipapar menggunakan data 1-minit average ({len(df_chart):,} points) daripada {len(df):,} rekod asal untuk prestasi lebih laju."
+        f"Charts are displayed using 1-minute averaged data ({len(df_chart):,} points) from {len(df):,} original records to improve dashboard performance while preserving the overall trend."
     )
 
     fig1 = px.line(
@@ -865,8 +865,8 @@ elif page == "AI Prediction":
         with st.expander("📘 Simple explanation of AI results", expanded=False):
             st.markdown("""
             **1-Hour Status Accuracy** shows how often the AI correctly predicts the air quality category after 1 hour, such as GOOD, UNHEALTHY, or HAZARDOUS.  
-            **Average AQ Error** shows the average difference between predicted AQ and actual AQ after 1 hour. Lower value is better.  
-            **Large AQ Error Indicator** checks whether the model sometimes makes larger mistakes. Lower value is better.  
+            **Mean Absolute Error (MAE)** shows the average difference between the predicted AQ and the actual AQ after 1 hour. Lower value is better.  
+            **Root Mean Squared Error (RMSE)** gives higher penalty to larger prediction errors. Lower value is better.  
 
             The dashboard focuses on **status accuracy** because the system decision is based on air quality category and smart recommendation, not only the exact AQ value.
             """)
@@ -879,12 +879,12 @@ elif page == "AI Prediction":
         )
 
         col_b.metric(
-            "Average AQ Error",
+            "Mean Absolute Error (MAE)",
             f"±{model_mae:.0f} AQ"
         )
 
         col_c.metric(
-            "Large AQ Error Indicator",
+            "Root Mean Squared Error (RMSE)",
             f"±{model_rmse:.0f} AQ"
         )
 
@@ -905,7 +905,7 @@ elif page == "AI Prediction":
 
         with st.expander("🔍 Advanced model details"):
             st.write(f"R² Score: {model_r2:.4f}")
-            st.write(f"Baseline Average Error: ±{baseline_mae:.2f} AQ")
+            st.write(f"Baseline MAE: {baseline_mae:.2f} AQ")
             st.write("R² is kept only as a diagnostic value. For this project, status accuracy and prediction error are easier to interpret because the system mainly decides whether the future condition is GOOD, UNHEALTHY, or HAZARDOUS.")
             st.write("Note: Newly collected data can be used immediately for live prediction. However, for training and evaluation, a new row only becomes AI-ready after its actual 1-hour-ahead value exists.")
 
