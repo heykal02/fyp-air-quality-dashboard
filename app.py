@@ -639,7 +639,7 @@ if page == "Realtime Monitoring":
 
     upload_status, gap_seconds, upload_message = get_data_upload_status(
         latest["Time"],
-        timeout_seconds=120
+        timeout_seconds=30
     )
 
     if upload_status == "OK":
