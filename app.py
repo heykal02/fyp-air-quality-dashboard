@@ -164,7 +164,7 @@ st.markdown("""
 # ==========================================
 
 st_autorefresh(
-    interval=10000,
+    interval=4000,
     key="air_quality_refresh"
 )
 
